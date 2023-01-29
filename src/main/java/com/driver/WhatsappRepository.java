@@ -143,6 +143,58 @@ public class WhatsappRepository {
             throw new Exception("Group does not exist");
         }
     }
+    public int removeUserfromDb(User user)throws Exception{
+        Group checkGroup = null;
+        boolean userAvailability = false;
+        for(Group group:groupUserMap.keySet()){
+            List<User> userList = groupUserMap.get(group);
+            for(User user1:userList){
+                if(user1 == user){
+                    checkGroup = group;
+                    userAvailability = true;
+                }
+            }
+        }
+        if(!userAvailability){
+            throw new Exception("User not found");
+        }
+        boolean adminCheck = false;
+        for(Group group : adminMap.keySet()){
+            if(adminMap.get(group) == user){
+                adminCheck = true;
+            }
+        }
+        if(adminCheck){
+            throw new Exception("Cannot remove admin");
+        }
+        List<User> users = groupUserMap.get(checkGroup);
+        for(User user1:users){
+            if(user1 == user){
+                users.remove(user1);
+            }
+        }
+        Set<String> username = userMap.keySet();
+        for(String s:username){
+            if(userMap.get(s)==user){
+                userMap.remove(s);
+            }
+        }
+        List<Message> messages = groupMessageMap.get(checkGroup);
+        for(Message message:messages){
+            if(senderMap.get(message)==user){
+                senderMap.remove(message);
+                messages.remove(message);
+            }
+        }
+        List<Message> messages1 = groupMessageMap.get(checkGroup);
+        List<User> users1 = groupUserMap.get(checkGroup);
+
+        int ans =messages1.size()+ users1.size()+messageId;
+
+
+     return ans;
+
+    }
 
 
 }
